@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/Mohan-mk06/Library-Management-system.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('Agille') {
+                    bat 'npm install'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('Agille') {
+                    bat 'docker build -t library-app .'
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                bat 'docker run -d -p 3000:5173 library-app'
+            }
+        }
+    }
+}
