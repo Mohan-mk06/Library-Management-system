@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Mohan-mk06/Library-Management-system.git'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                dir('Agille') {
+                    bat 'npm install' 
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                dir('Agille') {
+                    bat 'docker build -t library-app .' 
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                dir('Agille') {
+                    // Tell Jenkins to use Docker Desktop's context and point to your user's config file
+                    bat 'kubectl --kubeconfig="C:\\Users\\loges\\.kube\\config" config use-context docker-desktop'
+                    
+                    // Deploy using that same config file
+                    bat 'kubectl --kubeconfig="C:\\Users\\loges\\.kube\\config" apply -f deployment.yaml'
+                }
+            }
+        }
+    }
+}
