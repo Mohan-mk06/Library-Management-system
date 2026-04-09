@@ -2,32 +2,34 @@ pipeline {
     agent any
 
     stages {
-
         stage('Clone Repo') {
             steps {
                 git branch: 'main', url: 'https://github.com/Mohan-mk06/Library-Management-system.git'
             }
         }
-
         stage('Install Dependencies') {
             steps {
                 dir('Agille') {
-                    bat 'npm install'
+                    bat 'npm install' 
                 }
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 dir('Agille') {
-                    bat 'docker build -t library-app .'
+                    bat 'docker build -t library-app .' 
                 }
             }
         }
-
-        stage('Run Container') {
+        stage('Deploy to Kubernetes') {
             steps {
-                bat 'docker run -d -p 3000:5173 library-app'
+                dir('Agille') {
+                    // Load the image into Minikube so it doesn't get an ImagePullBackOff error
+                    bat 'minikube image load library-app'
+                    
+                    // Deploy the app and service using the YAML file
+                    bat 'kubectl apply -f deployment.yaml'
+                }
             }
         }
     }
