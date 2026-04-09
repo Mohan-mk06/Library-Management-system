@@ -24,10 +24,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 dir('Agille') {
-                    // Load the image into Minikube so it doesn't get an ImagePullBackOff error
-                    bat 'minikube image load library-app'
-                    
-                    // Deploy the app and service using the YAML file
+                    // Deploy the app and service directly to Docker Desktop's Kubernetes
                     bat 'kubectl apply -f deployment.yaml'
                 }
             }
