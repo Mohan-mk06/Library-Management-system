@@ -17,16 +17,14 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 dir('Agille') {
-                    // Added --no-cache to fix the "parent snapshot not found" error
-                    bat 'docker build --no-cache -t library-app .' 
+                    bat 'docker build -t library-app .' 
                 }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
                 dir('Agille') {
-                    // Points Jenkins to your local user config for Docker Desktop's Kubernetes
-                    bat 'kubectl --kubeconfig="C:\\Users\\loges\\.kube\\config" config use-context docker-desktop'
+                    // This points Jenkins to your user's Kubernetes config file
                     bat 'kubectl --kubeconfig="C:\\Users\\loges\\.kube\\config" apply -f deployment.yaml'
                 }
             }
